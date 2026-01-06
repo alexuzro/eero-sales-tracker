@@ -346,19 +346,20 @@
             <div class="month-selector">
                 <label for="monthFilter" style="margin-right: 10px; font-weight: 600;">View Month:</label>
                 <select id="monthFilter">
-                    <option value="2026-01">January 2026</option>
-                    <option value="2026-02">February 2026</option>
-                    <option value="2026-03">March 2026</option>
-                    <option value="2026-04">April 2026</option>
-                    <option value="2026-05">May 2026</option>
-                    <option value="2026-06">June 2026</option>
-                    <option value="2026-07">July 2026</option>
-                    <option value="2026-08">August 2026</option>
-                    <option value="2026-09">September 2026</option>
-                    <option value="2026-10">October 2026</option>
-                    <option value="2026-11">November 2026</option>
-                    <option value="2026-12">December 2026</option>
+                    <option value="Jan_2026">January 2026</option>
+                    <option value="Feb_2026">February 2026</option>
+                    <option value="Mar_2026">March 2026</option>
+                    <option value="Apr_2026">April 2026</option>
+                    <option value="May_2026">May 2026</option>
+                    <option value="Jun_2026">June 2026</option>
+                    <option value="Jul_2026">July 2026</option>
+                    <option value="Aug_2026">August 2026</option>
+                    <option value="Sep_2026">September 2026</option>
+                    <option value="Oct_2026">October 2026</option>
+                    <option value="Nov_2026">November 2026</option>
+                    <option value="Dec_2026">December 2026</option>
                 </select>
+
             </div>
             
             <button type="button" class="btn refresh-btn" onclick="loadLeaderboard()">
@@ -394,7 +395,7 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSuzdMjcY0kB1JK4tXacxjY61r7BfaPyttmyYPpMKfCNVTWp90qhsJcpPwvNe0tZjKyQ/exec';
         
         // Set current month as default (January 2026)
-        const currentMonth = '2026-01';
+        const currentMonth = 'Jan_2026';
         document.getElementById('monthFilter').value = currentMonth;
         
         // Form submission
@@ -561,5 +562,6 @@
     </script>
 </body>
 </html>
+
 
 
