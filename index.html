@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,56 +11,56 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        
+
         .header {
-            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            margin-bottom: 30px;
+            padding: 30px;
+            text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
         }
-        
+
         .header p {
-            font-size: 1.2em;
+            font-size: 1.1em;
             opacity: 0.9;
         }
-        
-        .card {
-            background: white;
-            border-radius: 15px;
+
+        .content {
             padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
-        .form-group label {
+
+        label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
         }
-        
-        .form-group input,
-        .form-group select {
+
+        select, input {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -67,50 +68,63 @@
             font-size: 16px;
             transition: border-color 0.3s;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus {
+
+        select:focus, input:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+
         .btn {
+            width: 100%;
+            padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 30px;
             border: none;
             border-radius: 8px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
         .btn:active {
             transform: translateY(0);
         }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
+
         .leaderboard {
-            margin-top: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
         }
-        
+
         .leaderboard h2 {
             color: #333;
             margin-bottom: 20px;
-            font-size: 1.8em;
+            text-align: center;
         }
-        
+
+        .leaderboard-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .leaderboard-controls button {
+            flex: 1;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         .leaderboard-item {
             display: flex;
             justify-content: space-between;
@@ -119,144 +133,76 @@
             margin-bottom: 10px;
             background: #f8f9fa;
             border-radius: 8px;
-            border-left: 4px solid #667eea;
             transition: transform 0.2s;
         }
-        
+
         .leaderboard-item:hover {
             transform: translateX(5px);
+            background: #e9ecef;
         }
-        
+
         .leaderboard-item.top-1 {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-left-color: #ffd700;
+            font-weight: bold;
         }
-        
+
         .leaderboard-item.top-2 {
             background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
-            border-left-color: #c0c0c0;
         }
-        
+
         .leaderboard-item.top-3 {
             background: linear-gradient(135deg, #cd7f32 0%, #e8a87c 100%);
-            border-left-color: #cd7f32;
         }
-        
+
         .rank {
             font-size: 1.5em;
             font-weight: bold;
             color: #667eea;
             min-width: 40px;
         }
-        
-        .top-1 .rank,
-        .top-2 .rank,
-        .top-3 .rank {
-            color: #333;
-        }
-        
-        .associate-info {
-            flex-grow: 1;
-            margin-left: 15px;
-        }
-        
-        .associate-name {
-            font-weight: 600;
+
+        .name {
+            flex: 1;
             font-size: 1.1em;
-            color: #333;
         }
-        
-        .associate-details {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .sales-count {
-            font-size: 1.5em;
+
+        .units {
+            font-size: 1.2em;
             font-weight: bold;
-            color: #667eea;
-            min-width: 80px;
-            text-align: right;
+            color: #764ba2;
         }
-        
-        .top-1 .sales-count,
-        .top-2 .sales-count,
-        .top-3 .sales-count {
-            color: #333;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-        
-        .month-selector {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .month-selector select {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 2px solid #667eea;
-        }
-        
-        .success-message {
-            background: #4caf50;
-            color: white;
+
+        .message {
             padding: 15px;
-            border-radius: 8px;
             margin-bottom: 20px;
-            display: none;
-        }
-        
-        .error-message {
-            background: #f44336;
-            color: white;
-            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
+            text-align: center;
+            font-weight: 600;
         }
-        
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
         .loading {
             text-align: center;
             padding: 20px;
-            color: #666;
+            color: #667eea;
+            font-style: italic;
         }
-        
-        .store-selector {
-            margin-bottom: 20px;
-        }
-        
-        .refresh-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            margin-top: 10px;
-            font-size: 16px;
-            padding: 10px 20px;
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
         }
     </style>
 </head>
@@ -266,302 +212,223 @@
             <h1>🏆 eero Sales Tracker</h1>
             <p>Track your sales and compete with your team!</p>
         </div>
-        
-        <div class="card">
-            <h2 style="color: #333; margin-bottom: 20px;">Log Your Sale</h2>
-            
-            <div class="success-message" id="successMessage">
-                Sale logged successfully! 🎉
-            </div>
-            
-            <div class="error-message" id="errorMessage">
-                Error logging sale. Please try again.
-            </div>
-            
+
+        <div class="content">
+            <div id="messageArea"></div>
+
             <form id="salesForm">
-                <div class="store-selector">
-                    <div class="form-group">
-                        <label for="storeNumber">Store Number</label>
-                        <select id="storeNumber" required>
-                            <option value="">Select your store...</option>
-                            <option value="BBY 550">BBY 550</option>
-                            <option value="BBY 551">BBY 551</option>
-                            <option value="BBY 552">BBY 552</option>
-                            <option value="BBY 553">BBY 553</option>
-                            <option value="BBY 554">BBY 554</option>
-                            <option value="BBY 555">BBY 555</option>
-                            <option value="BBY 557">BBY 557</option>
-                            <option value="BBY 558">BBY 558</option>
-                            <option value="BBY 559">BBY 559</option>
-                            <option value="BBY 1258">BBY 1258</option>
-                            <option value="BBY 1498">BBY 1498</option>
-                            <option value="BBY 1168">BBY 1168</option>
-                            <option value="BBY 1502">BBY 1502</option>
-                            <option value="BBY 808">BBY 808</option>
-                            <option value="BBY 881">BBY 881</option>
-                            <option value="BBY 688">BBY 688</option>
-                            <option value="BBY 1178">BBY 1178</option>
-                            <option value="BBY 543">BBY 543</option>
-                            <option value="BBY 1136">BBY 1136</option>
-                        </select>
-                    </div>
-                </div>
-                
                 <div class="form-group">
-                    <label for="associateName">Your Name (FirstName LastInitial)</label>
-                    <input type="text" id="associateName" placeholder="e.g., John D" required>
+                    <label for="storeNumber">Select Your Store:</label>
+                    <select id="storeNumber" required>
+                        <option value="">-- Select Store --</option>
+                        <option value="BBY 550">BBY 550</option>
+                        <option value="BBY 551">BBY 551</option>
+                        <option value="BBY 552">BBY 552</option>
+                        <option value="BBY 553">BBY 553</option>
+                        <option value="BBY 554">BBY 554</option>
+                        <option value="BBY 555">BBY 555</option>
+                        <option value="BBY 556">BBY 556</option>
+                        <option value="BBY 557">BBY 557</option>
+                        <option value="BBY 558">BBY 558</option>
+                        <option value="BBY 559">BBY 559</option>
+                        <option value="BBY 808">BBY 808</option>
+                        <option value="BBY 881">BBY 881</option>
+                        <option value="BBY 688">BBY 688</option>
+                        <option value="BBY 1178">BBY 1178</option>
+                        <option value="BBY 543">BBY 543</option>
+                        <option value="BBY 1136">BBY 1136</option>
+                    </select>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="productModel">eero Model Sold</label>
-                    <select id="productModel" required>
-                        <option value="">Select model...</option>
+                    <label for="associateName">Your Name (FirstName LastInitial):</label>
+                    <input type="text" id="associateName" placeholder="e.g., John D" required pattern="[A-Za-z]+ [A-Za-z]">
+                </div>
+
+                <div class="form-group">
+                    <label for="eeroModel">eero Model Sold:</label>
+                    <select id="eeroModel" required>
+                        <option value="">-- Select Model --</option>
                         <option value="eero 6 - 1-pack">eero 6 - 1-pack</option>
                         <option value="eero 6 - 2-pack">eero 6 - 2-pack</option>
                         <option value="eero 6 - 3-pack">eero 6 - 3-pack</option>
                         <option value="eero 6+ - 1-pack">eero 6+ - 1-pack</option>
                         <option value="eero 6+ - 2-pack">eero 6+ - 2-pack</option>
                         <option value="eero 6+ - 3-pack">eero 6+ - 3-pack</option>
-                        <option value="eero Pro 6E - 1-pack">eero Pro 6E - 1-pack</option>
-                        <option value="eero Pro 6E - 2-pack">eero Pro 6E - 2-pack</option>
-                        <option value="eero Pro 6E - 3-pack">eero Pro 6E - 3-pack</option>
                         <option value="eero 7 - 1-pack">eero 7 - 1-pack</option>
                         <option value="eero 7 - 2-pack">eero 7 - 2-pack</option>
                         <option value="eero 7 - 3-pack">eero 7 - 3-pack</option>
-                        <option value="eero Pro 7 - 1-pack">eero Pro 7 - 1-pack</option>
-                        <option value="eero Pro 7 - 2-pack">eero Pro 7 - 2-pack</option>
-                        <option value="eero Pro 7 - 3-pack">eero Pro 7 - 3-pack</option>
                         <option value="eero Max 7 - 1-pack">eero Max 7 - 1-pack</option>
                         <option value="eero Max 7 - 2-pack">eero Max 7 - 2-pack</option>
                         <option value="eero Max 7 - 3-pack">eero Max 7 - 3-pack</option>
-                        <option value="eero Outdoor 7 - 1-pack">eero Outdoor 7 - 1-pack</option>
                     </select>
                 </div>
-                
-                <button type="submit" class="btn" id="submitBtn">Log Sale</button>
-            </form>
-        </div>
-        
-        <div class="card">
-            <div class="month-selector">
-                <label for="monthFilter" style="margin-right: 10px; font-weight: 600;">View Month:</label>
-                <select id="monthFilter">
-                    <option value="Jan_2026">January 2026</option>
-                    <option value="Feb_2026">February 2026</option>
-                    <option value="Mar_2026">March 2026</option>
-                    <option value="Apr_2026">April 2026</option>
-                    <option value="May_2026">May 2026</option>
-                    <option value="Jun_2026">June 2026</option>
-                    <option value="Jul_2026">July 2026</option>
-                    <option value="Aug_2026">August 2026</option>
-                    <option value="Sep_2026">September 2026</option>
-                    <option value="Oct_2026">October 2026</option>
-                    <option value="Nov_2026">November 2026</option>
-                    <option value="Dec_2026">December 2026</option>
-                </select>
 
-            </div>
-            
-            <button type="button" class="btn refresh-btn" onclick="loadLeaderboard()">
-                🔄 Refresh Leaderboard
-            </button>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalSales">0</div>
-                    <div class="stat-label">Total Units Sold</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalAssociates">0</div>
-                    <div class="stat-label">Active Associates</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="topSeller">-</div>
-                    <div class="stat-label">Top Seller</div>
-                </div>
-            </div>
-            
+                <button type="submit" class="btn">Log Sale 🎉</button>
+            </form>
+
             <div class="leaderboard">
-                <h2>🏅 Store Leaderboard</h2>
-                <div id="leaderboardContainer">
-                    <div class="loading">Loading leaderboard...</div>
+                <h2>📊 Store Leaderboard</h2>
+                <div class="leaderboard-controls">
+                    <select id="monthFilter">
+                        <option value="Jan_2026">January 2026</option>
+                        <option value="Feb_2026">February 2026</option>
+                        <option value="Mar_2026">March 2026</option>
+                        <option value="Apr_2026">April 2026</option>
+                        <option value="May_2026">May 2026</option>
+                        <option value="Jun_2026">June 2026</option>
+                        <option value="Jul_2026">July 2026</option>
+                        <option value="Aug_2026">August 2026</option>
+                        <option value="Sep_2026">September 2026</option>
+                        <option value="Oct_2026">October 2026</option>
+                        <option value="Nov_2026">November 2026</option>
+                        <option value="Dec_2026">December 2026</option>
+                    </select>
+                    <button onclick="refreshLeaderboard()">🔄 Refresh</button>
+                </div>
+                <div id="leaderboardContent">
+                    <div class="empty-state">Select your store to view the leaderboard</div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <script>
-        // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSuzdMjcY0kB1JK4tXacxjY61r7BfaPyttmyYPpMKfCNVTWp90qhsJcpPwvNe0tZjKyQ/exec';
-        
-        // Set current month as default (January 2026)
-        const currentMonth = 'Jan_2026';
+       const firebaseConfig = {
+          apiKey: "AIzaSyAYd64A-sHu8kOs4zM3JOp-jN9Ki_3yCDk",
+          authDomain: "eero-sales-tracker.firebaseapp.com",
+          databaseURL: "https://eero-sales-tracker-default-rtdb.firebaseio.com",
+          projectId: "eero-sales-tracker",
+          storageBucket: "eero-sales-tracker.firebasestorage.app",
+          messagingSenderId: "757618084774",
+          appId: "1:757618084774:web:2471bec5cdc34919ed5d67",
+          measurementId: "G-QJFV2NF4FS"
+};
+
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const now = new Date();
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const currentMonth = monthNames[now.getMonth()] + '_' + now.getFullYear();
         document.getElementById('monthFilter').value = currentMonth;
-        
-        // Form submission
-        document.getElementById('salesForm').addEventListener('submit', async function(e) {
+
+        document.getElementById('salesForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const store = document.getElementById('storeNumber').value;
-            const name = document.getElementById('associateName').value.trim();
-            const model = document.getElementById('productModel').value;
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Validate name format
-            const namePattern = /^[A-Za-z]+\s[A-Za-z]$/;
+            const name = document.getElementById('associateName').value;
+            const model = document.getElementById('eeroModel').value;
+
+            const namePattern = /^[A-Za-z]+ [A-Za-z]$/;
             if (!namePattern.test(name)) {
-                alert('Please enter your name in the format: FirstName LastInitial (e.g., John D)');
+                showMessage('Please enter your name in the format: FirstName LastInitial (e.g., John D)', 'error');
                 return;
             }
-            
-            // Disable button during submission
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Logging Sale...';
-            
+
             try {
-                // Send data to Google Sheets
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'addSale',
-                        month: currentMonth,
-                        store: store,
-                        name: name,
-                        model: model,
-                        timestamp: new Date().toISOString()
-                    })
-                });
+                const sale = {
+                    timestamp: new Date().toISOString(),
+                    month: currentMonth,
+                    store: store,
+                    name: name,
+                    model: model
+                };
+
+                await database.ref('sales').push(sale);
+
+                showMessage('Sale logged successfully! 🎉', 'success');
                 
-                // Show success message
-                const successMsg = document.getElementById('successMessage');
-                successMsg.style.display = 'block';
-                setTimeout(() => {
-                    successMsg.style.display = 'none';
-                }, 3000);
-                
-                // Reset form
                 document.getElementById('associateName').value = '';
-                document.getElementById('productModel').value = '';
-                
-                // Reload leaderboard
-                setTimeout(() => {
-                    loadLeaderboard();
-                }, 1000);
-                
+                document.getElementById('eeroModel').value = '';
+
+                refreshLeaderboard();
             } catch (error) {
-                console.error('Error:', error);
-                const errorMsg = document.getElementById('errorMessage');
-                errorMsg.style.display = 'block';
-                setTimeout(() => {
-                    errorMsg.style.display = 'none';
-                }, 3000);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Log Sale';
+                console.error('Error logging sale:', error);
+                showMessage('Error logging sale. Please try again.', 'error');
             }
         });
-        
-        // Month filter change
-        document.getElementById('monthFilter').addEventListener('change', loadLeaderboard);
-        
-        // Store selector change
-        document.getElementById('storeNumber').addEventListener('change', loadLeaderboard);
-        
-        // Load leaderboard function
-        async function loadLeaderboard() {
-            const selectedMonth = document.getElementById('monthFilter').value;
-            const selectedStore = document.getElementById('storeNumber').value;
-            const container = document.getElementById('leaderboardContainer');
-            
-            if (!selectedStore) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Please select your store to view the leaderboard.</p>';
+
+        document.getElementById('storeNumber').addEventListener('change', refreshLeaderboard);
+        document.getElementById('monthFilter').addEventListener('change', refreshLeaderboard);
+
+        async function refreshLeaderboard() {
+            const store = document.getElementById('storeNumber').value;
+            const month = document.getElementById('monthFilter').value;
+            const leaderboardContent = document.getElementById('leaderboardContent');
+
+            if (!store) {
+                leaderboardContent.innerHTML = '<div class="empty-state">Select your store to view the leaderboard</div>';
                 return;
             }
-            
-            container.innerHTML = '<div class="loading">Loading leaderboard...</div>';
-            
+
+            leaderboardContent.innerHTML = '<div class="loading">Loading leaderboard...</div>';
+
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getLeaderboard&month=${selectedMonth}&store=${selectedStore}`);
-                const data = await response.json();
-                
-                if (!data.sales || data.sales.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No sales logged for this month yet. Be the first!</p>';
-                    document.getElementById('totalSales').textContent = '0';
-                    document.getElementById('totalAssociates').textContent = '0';
-                    document.getElementById('topSeller').textContent = '-';
+                const snapshot = await database.ref('sales')
+                    .orderByChild('store')
+                    .equalTo(store)
+                    .once('value');
+
+                const sales = [];
+                snapshot.forEach((childSnapshot) => {
+                    const sale = childSnapshot.val();
+                    if (sale.month === month) {
+                        sales.push(sale);
+                    }
+                });
+
+                if (sales.length === 0) {
+                    leaderboardContent.innerHTML = '<div class="empty-state">No sales logged for this month yet. Be the first! 🚀</div>';
                     return;
                 }
-                
-                // Process data
+
                 const salesByAssociate = {};
-                data.sales.forEach(sale => {
+                sales.forEach(sale => {
                     if (!salesByAssociate[sale.name]) {
-                        salesByAssociate[sale.name] = {
-                            sales: [],
-                            count: 0
-                        };
+                        salesByAssociate[sale.name] = 0;
                     }
-                    salesByAssociate[sale.name].sales.push(sale);
-                    salesByAssociate[sale.name].count++;
+                    salesByAssociate[sale.name]++;
                 });
-                
-                // Sort by count
-                const associates = Object.keys(salesByAssociate)
-                    .map(name => ({
-                        name: name,
-                        units: salesByAssociate[name].count,
-                        lastSale: salesByAssociate[name].sales[salesByAssociate[name].sales.length - 1]
-                    }))
+
+                const leaderboard = Object.entries(salesByAssociate)
+                    .map(([name, units]) => ({ name, units }))
                     .sort((a, b) => b.units - a.units);
-                
-                const totalUnits = associates.reduce((sum, a) => sum + a.units, 0);
-                
-                // Update stats
-                document.getElementById('totalSales').textContent = totalUnits;
-                document.getElementById('totalAssociates').textContent = associates.length;
-                document.getElementById('topSeller').textContent = associates.length > 0 ? associates[0].name : '-';
-                
-                // Build leaderboard
+
                 let html = '';
-                associates.forEach((associate, index) => {
+                leaderboard.forEach((entry, index) => {
                     const rank = index + 1;
-                    const rankClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
-                    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
-                    
-                    const saleDate = new Date(associate.lastSale.timestamp).toLocaleDateString();
-                    
+                    const topClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
                     html += `
-                        <div class="leaderboard-item ${rankClass}">
-                            <div class="rank">${medal || rank}</div>
-                            <div class="associate-info">
-                                <div class="associate-name">${associate.name}</div>
-                                <div class="associate-details">Last sale: ${associate.lastSale.model} on ${saleDate}</div>
-                            </div>
-                            <div class="sales-count">${associate.units} units</div>
+                        <div class="leaderboard-item ${topClass}">
+                            <span class="rank">#${rank}</span>
+                            <span class="name">${entry.name}</span>
+                            <span class="units">${entry.units} units</span>
                         </div>
                     `;
                 });
-                
-                container.innerHTML = html;
-                
+
+                leaderboardContent.innerHTML = html;
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
-                container.innerHTML = '<p style="text-align: center; color: #f44336; padding: 20px;">Error loading leaderboard. Please try again.</p>';
+                leaderboardContent.innerHTML = '<div class="error">Error loading leaderboard. Please try again.</div>';
             }
         }
-        
-        // Initial load
-        loadLeaderboard();
-        
-        // Auto-refresh every 30 seconds
-        setInterval(loadLeaderboard, 30000);
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+
+        refreshLeaderboard();
     </script>
 </body>
 </html>
-
-
 
