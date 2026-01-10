@@ -60,6 +60,12 @@
             color: #333;
         }
 
+        .optional-label {
+            color: #999;
+            font-weight: 400;
+            font-size: 0.9em;
+        }
+
         select, input {
             width: 100%;
             padding: 12px;
@@ -72,6 +78,87 @@
         select:focus, input:focus {
             outline: none;
             border-color: #667eea;
+        }
+
+        .photo-upload-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px dashed #667eea;
+        }
+
+        .photo-upload-section.has-photo {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .photo-encouragement {
+            text-align: center;
+            color: #667eea;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .photo-input-wrapper {
+            position: relative;
+        }
+
+        #photoInput {
+            display: none;
+        }
+
+        .photo-upload-btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .photo-upload-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .photo-preview.show {
+            display: block;
+        }
+
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .photo-preview-actions {
+            margin-top: 10px;
+        }
+
+        .remove-photo-btn {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remove-photo-btn:hover {
+            background: #c82333;
         }
 
         .btn {
@@ -96,6 +183,12 @@
             transform: translateY(0);
         }
 
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .leaderboard {
             margin-top: 40px;
             padding-top: 30px;
@@ -112,6 +205,10 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+        }
+
+        .leaderboard-controls select {
+            flex: 2;
         }
 
         .leaderboard-controls button {
@@ -204,6 +301,45 @@
             padding: 40px;
             color: #999;
         }
+
+        .uploading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .uploading-overlay.show {
+            display: flex;
+        }
+
+        .uploading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -274,14 +410,40 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn">Log Sale 🎉</button>
+                <div class="form-group">
+                    <label>
+                        📸 Proof of Sale Photo 
+                        <span class="optional-label">(Optional but highly encouraged!)</span>
+                    </label>
+                    <div class="photo-upload-section" id="photoSection">
+                        <div class="photo-encouragement">
+                            Help us verify your sale with a quick photo! 📷
+                        </div>
+                        <div class="photo-input-wrapper">
+                            <input type="file" id="photoInput" accept="image/*" capture="environment">
+                            <button type="button" class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+                                📷 Take/Upload Photo
+                            </button>
+                        </div>
+                        <div class="photo-preview" id="photoPreview">
+                            <img id="previewImage" src="" alt="Photo preview">
+                            <div class="photo-preview-actions">
+                                <button type="button" class="remove-photo-btn" onclick="removePhoto()">
+                                    ❌ Remove Photo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">Log Sale 🎉</button>
             </form>
 
             <div class="leaderboard">
                 <h2>📊 Store Leaderboard</h2>
-                <p style="text-align: center; color: #667eea; font-weight: 600; margin-bottom: 20px; padding: 15px; background: #f0f4ff; border-radius: 8px; border-left: 4px solid #667eea;">
-                    🎁 <strong>January Challenge:</strong> 1st person to sell 6 eero units by the end of the month wins a drink of choice (Starbucks, Dunkin Donuts, etc.)!
-                </p>
+                <div id="monthlyChallenge" style="text-align: center; color: #667eea; font-weight: 600; margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #f0f4ff 0%, #fff5f5 100%); border-radius: 8px; border-left: 4px solid #667eea;">
+                    <span id="challengeText">Loading challenge...</span>
+                </div>
                 <div class="leaderboard-controls">
                     <select id="monthFilter">
                         <option value="Jan_2026">January 2026</option>
@@ -306,29 +468,61 @@
         </div>
     </div>
 
+    <div class="uploading-overlay" id="uploadingOverlay">
+        <div class="uploading-content">
+            <div class="spinner"></div>
+            <p>Uploading photo and logging sale...</p>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
     <script>
-       const firebaseConfig = {
-          apiKey: "AIzaSyAYd64A-sHu8kOs4zM3JOp-jN9Ki_3yCDk",
-          authDomain: "eero-sales-tracker.firebaseapp.com",
-          databaseURL: "https://eero-sales-tracker-default-rtdb.firebaseio.com",
-          projectId: "eero-sales-tracker",
-          storageBucket: "eero-sales-tracker.firebasestorage.app",
-          messagingSenderId: "757618084774",
-          appId: "1:757618084774:web:2471bec5cdc34919ed5d67",
-          measurementId: "G-QJFV2NF4FS"
-};
-
+        const firebaseConfig = {
+            apiKey: "AIzaSyAYd64A-sHu8kOs4zM3JOp-jN9Ki_3yCDk",
+            authDomain: "eero-sales-tracker.firebaseapp.com",
+            databaseURL: "https://eero-sales-tracker-default-rtdb.firebaseio.com",
+            projectId: "eero-sales-tracker",
+            storageBucket: "eero-sales-tracker.firebasestorage.app",
+            messagingSenderId: "757618084774",
+            appId: "1:757618084774:web:2471bec5cdc34919ed5d67",
+            measurementId: "G-QJFV2NF4FS"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const storage = firebase.storage();
+
+        let selectedPhoto = null;
 
         const now = new Date();
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const currentMonth = monthNames[now.getMonth()] + '_' + now.getFullYear();
         document.getElementById('monthFilter').value = currentMonth;
+
+        // Photo input handler
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedPhoto = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('photoPreview').classList.add('show');
+                    document.getElementById('photoSection').classList.add('has-photo');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removePhoto() {
+            selectedPhoto = null;
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').classList.remove('show');
+            document.getElementById('photoSection').classList.remove('has-photo');
+        }
 
         document.getElementById('salesForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -343,26 +537,49 @@
                 return;
             }
 
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            document.getElementById('uploadingOverlay').classList.add('show');
+
             try {
+                let photoURL = null;
+
+                // Upload photo if one was selected
+                if (selectedPhoto) {
+                    const timestamp = Date.now();
+                    const fileName = `sales-photos/${store.replace(' ', '_')}_${timestamp}_${selectedPhoto.name}`;
+                    const storageRef = storage.ref(fileName);
+                    
+                    const uploadTask = await storageRef.put(selectedPhoto);
+                    photoURL = await uploadTask.ref.getDownloadURL();
+                }
+
+                // Create sale object
                 const sale = {
                     timestamp: new Date().toISOString(),
                     month: currentMonth,
                     store: store,
                     name: name,
-                    model: model
+                    model: model,
+                    photoURL: photoURL || 'No photo provided'
                 };
 
                 await database.ref('sales').push(sale);
 
-                showMessage('Sale logged successfully! 🎉', 'success');
+                document.getElementById('uploadingOverlay').classList.remove('show');
+                showMessage('Sale logged successfully! 🎉' + (photoURL ? ' Photo uploaded!' : ''), 'success');
                 
                 document.getElementById('associateName').value = '';
                 document.getElementById('eeroModel').value = '';
+                removePhoto();
 
                 refreshLeaderboard();
             } catch (error) {
                 console.error('Error logging sale:', error);
+                document.getElementById('uploadingOverlay').classList.remove('show');
                 showMessage('Error logging sale. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
             }
         });
 
@@ -440,10 +657,41 @@
             }, 5000);
         }
 
+        // Monthly challenges configuration
+        const monthlyChallenges = {
+            "Jan_2026": { month_name: "January", goal: 6, reward: "drink of choice (Starbucks, Dunkin Donuts, etc.)" },
+            "Feb_2026": { month_name: "February", goal: 5, reward: "treat" },
+            "Mar_2026": { month_name: "March", goal: 7, reward: "lunch of choice (up to $20)" },
+            "Apr_2026": { month_name: "April", goal: 8, reward: "treat" },
+            "May_2026": { month_name: "May", goal: 9, reward: "treat" },
+            "Jun_2026": { month_name: "June", goal: 8, reward: "treat" },
+            "Jul_2026": { month_name: "July", goal: 7, reward: "lunch of choice (up to $20)" },
+            "Aug_2026": { month_name: "August", goal: 10, reward: "treat" },
+            "Sep_2026": { month_name: "September", goal: 9, reward: "treat" },
+            "Oct_2026": { month_name: "October", goal: 8, reward: "treat" },
+            "Nov_2026": { month_name: "November", goal: 12, reward: "treat" },
+            "Dec_2026": { month_name: "December", goal: 15, reward: "treat" }
+        };
+
+        function displayMonthlyChallenge() {
+            const currentMonth = document.getElementById('monthFilter').value;
+            const challenge = monthlyChallenges[currentMonth];
+
+            if (challenge) {
+                const challengeText = document.getElementById('challengeText');
+                challengeText.innerHTML = `
+                    🎁 <strong>${challenge.month_name} Challenge:</strong>
+                    1st person to sell <strong>${challenge.goal} eero units</strong> by the end of the month wins
+                    <strong>${challenge.reward}</strong>!
+                `;
+            }
+        }
+
+        document.getElementById('monthFilter').addEventListener('change', displayMonthlyChallenge);
+
+        setTimeout(displayMonthlyChallenge, 100);
         refreshLeaderboard();
     </script>
 </body>
 </html>
-
-
 
