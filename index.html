@@ -220,53 +220,75 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 600;
         }
 
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
+        .leaderboard-controls button:hover {
+            background: #5568d3;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
             border-radius: 8px;
-            transition: transform 0.2s;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .leaderboard-item:hover {
-            transform: translateX(5px);
-            background: #e9ecef;
+        .leaderboard-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
-        .leaderboard-item.top-1 {
+        .leaderboard-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leaderboard-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .leaderboard-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .leaderboard-table tr.top-1 {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
             font-weight: bold;
         }
 
-        .leaderboard-item.top-2 {
+        .leaderboard-table tr.top-2 {
             background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            font-weight: bold;
         }
 
-        .leaderboard-item.top-3 {
+        .leaderboard-table tr.top-3 {
             background: linear-gradient(135deg, #cd7f32 0%, #e8a87c 100%);
+            font-weight: bold;
         }
 
-        .rank {
-            font-size: 1.5em;
+        .rank-cell {
+            font-size: 1.3em;
             font-weight: bold;
             color: #667eea;
-            min-width: 40px;
         }
 
-        .name {
-            flex: 1;
-            font-size: 1.1em;
-        }
-
-        .units {
-            font-size: 1.2em;
+        .units-cell {
             font-weight: bold;
             color: #764ba2;
+            font-size: 1.1em;
         }
 
         .message {
@@ -300,6 +322,14 @@
             text-align: center;
             padding: 40px;
             color: #999;
+        }
+
+        .last-updated {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 15px;
+            font-style: italic;
         }
 
         .uploading-overlay {
@@ -340,6 +370,26 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @media (max-width: 768px) {
+            .leaderboard-table {
+                font-size: 0.9em;
+            }
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 10px 8px;
+            }
+
+            .leaderboard-controls {
+                flex-direction: column;
+            }
+
+            .leaderboard-controls select,
+            .leaderboard-controls button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -367,12 +417,12 @@
                         <option value="BBY 557">BBY 557</option>
                         <option value="BBY 558">BBY 558</option>
                         <option value="BBY 559">BBY 559</option>
+                        <option value="BBY 688">BBY 688</option>
                         <option value="BBY 808">BBY 808</option>
                         <option value="BBY 881">BBY 881</option>
-                        <option value="BBY 688">BBY 688</option>
-                        <option value="BBY 1178">BBY 1178</option>
-                        <option value="BBY 1168">BBY 1168</option>
                         <option value="BBY 1136">BBY 1136</option>
+                        <option value="BBY 1168">BBY 1168</option>
+                        <option value="BBY 1178">BBY 1178</option>
                         <option value="BBY 1258">BBY 1258</option>
                         <option value="BBY 1498">BBY 1498</option>
                         <option value="BBY 1502">BBY 1502</option>
@@ -440,7 +490,7 @@
             </form>
 
             <div class="leaderboard">
-                <h2>📊 Store Leaderboard</h2>
+                <h2>🏆 Individual Leaderboard - All Stores</h2>
                 <div id="monthlyChallenge" style="text-align: center; color: #667eea; font-weight: 600; margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #f0f4ff 0%, #fff5f5 100%); border-radius: 8px; border-left: 4px solid #667eea;">
                     <span id="challengeText">Loading challenge...</span>
                 </div>
@@ -462,8 +512,9 @@
                     <button onclick="refreshLeaderboard()">🔄 Refresh</button>
                 </div>
                 <div id="leaderboardContent">
-                    <div class="empty-state">Select your store to view the leaderboard</div>
+                    <div class="loading">Loading leaderboard...</div>
                 </div>
+                <div class="last-updated" id="lastUpdated"></div>
             </div>
         </div>
     </div>
@@ -494,6 +545,8 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const storage = firebase.storage();
+
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-b3pcfcyw1J37ejZRGgurpdO97uli_KlQNi9ih3_JqBG6vTZqrQXPgbk8AZlZCKdG6A/exec';
 
         let selectedPhoto = null;
 
@@ -583,69 +636,53 @@
             }
         });
 
-        document.getElementById('storeNumber').addEventListener('change', refreshLeaderboard);
-        document.getElementById('monthFilter').addEventListener('change', refreshLeaderboard);
+        document.getElementById('monthFilter').addEventListener('change', () => {
+            displayMonthlyChallenge();
+            refreshLeaderboard();
+        });
 
         async function refreshLeaderboard() {
-            const store = document.getElementById('storeNumber').value;
             const month = document.getElementById('monthFilter').value;
             const leaderboardContent = document.getElementById('leaderboardContent');
-
-            if (!store) {
-                leaderboardContent.innerHTML = '<div class="empty-state">Select your store to view the leaderboard</div>';
-                return;
-            }
 
             leaderboardContent.innerHTML = '<div class="loading">Loading leaderboard...</div>';
 
             try {
-                const snapshot = await database.ref('sales')
-                    .orderByChild('store')
-                    .equalTo(store)
-                    .once('value');
+                const response = await fetch(`${SCRIPT_URL}?month=${month}`);
+                const data = await response.json();
 
-                const sales = [];
-                snapshot.forEach((childSnapshot) => {
-                    const sale = childSnapshot.val();
-                    if (sale.month === month) {
-                        sales.push(sale);
-                    }
-                });
-
-                if (sales.length === 0) {
+                if (!data.individual || data.individual.length === 0) {
                     leaderboardContent.innerHTML = '<div class="empty-state">No sales logged for this month yet. Be the first! 🚀</div>';
+                    document.getElementById('lastUpdated').textContent = '';
                     return;
                 }
 
-                const salesByAssociate = {};
-                sales.forEach(sale => {
-                    if (!salesByAssociate[sale.name]) {
-                        salesByAssociate[sale.name] = 0;
-                    }
-                    salesByAssociate[sale.name]++;
-                });
+                let html = '<table class="leaderboard-table"><thead><tr><th>Rank</th><th>Name</th><th>Store #</th><th>Units Sold</th></tr></thead><tbody>';
 
-                const leaderboard = Object.entries(salesByAssociate)
-                    .map(([name, units]) => ({ name, units }))
-                    .sort((a, b) => b.units - a.units);
+                data.individual.forEach(item => {
+                    const topClass = item.rank === 1 ? 'top-1' : item.rank === 2 ? 'top-2' : item.rank === 3 ? 'top-3' : '';
+                    let trophy = '';
+                    if (item.rank === 1) trophy = '🥇 ';
+                    else if (item.rank === 2) trophy = '🥈 ';
+                    else if (item.rank === 3) trophy = '🥉 ';
 
-                let html = '';
-                leaderboard.forEach((entry, index) => {
-                    const rank = index + 1;
-                    const topClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
                     html += `
-                        <div class="leaderboard-item ${topClass}">
-                            <span class="rank">#${rank}</span>
-                            <span class="name">${entry.name}</span>
-                            <span class="units">${entry.units} units</span>
-                        </div>
+                        <tr class="${topClass}">
+                            <td class="rank-cell">${trophy}${item.rank}</td>
+                            <td>${item.name}</td>
+                            <td>${item.store}</td>
+                            <td class="units-cell">${item.units}</td>
+                        </tr>
                     `;
                 });
 
+                html += '</tbody></table>';
                 leaderboardContent.innerHTML = html;
+                document.getElementById('lastUpdated').textContent = `Last Updated: ${data.lastUpdated}`;
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
                 leaderboardContent.innerHTML = '<div class="error">Error loading leaderboard. Please try again.</div>';
+                document.getElementById('lastUpdated').textContent = '';
             }
         }
 
@@ -687,13 +724,15 @@
             }
         }
 
-        document.getElementById('monthFilter').addEventListener('change', displayMonthlyChallenge);
+        // Initialize on page load
+        setTimeout(() => {
+            displayMonthlyChallenge();
+            refreshLeaderboard();
+        }, 100);
 
-        setTimeout(displayMonthlyChallenge, 100);
-        refreshLeaderboard();
+        // Auto-refresh every 2 hours (7200000 milliseconds)
+        setInterval(refreshLeaderboard, 7200000);
     </script>
 </body>
 </html>
-
-
 
