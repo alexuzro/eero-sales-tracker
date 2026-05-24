@@ -460,63 +460,6 @@
             gap: 8px;
         }
 
-        .notification-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-        }
-
-        .notification-toggle label {
-            margin-bottom: 0;
-            font-weight: 500;
-            color: #555;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.3s;
-            border-radius: 26px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-
-        .toggle-switch input:checked + .toggle-slider {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .toggle-switch input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
         .notification-status {
             font-size: 0.85em;
             color: #888;
@@ -771,21 +714,7 @@
             <!-- Notification Settings -->
             <div class="notification-section">
                 <h3>🔔 Notifications</h3>
-                <div class="notification-toggle">
-                    <label for="reminderToggle">Weekly reminder to log your sales</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="reminderToggle" onchange="toggleReminder(this.checked)">
-                        <span class="toggle-slider"></span>
-                    </div>
-                </div>
-                <div class="notification-toggle">
-                    <label for="challengeNotifToggle">Monthly challenge alerts</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="challengeNotifToggle" onchange="toggleChallengeNotifications(this.checked)">
-                        <span class="toggle-slider"></span>
-                    </div>
-                </div>
-                <div class="notification-status" id="notifStatus">Notifications are off</div>
+                <div class="notification-status" id="notifStatus">Checking notification status...</div>
             </div>
         </div>
     </div>
@@ -1078,29 +1007,37 @@
         // Notifications System (FCM Push)
         // ==========================================
         const messaging = firebase.messaging();
-        const VAPID_KEY = 'BKoVP0BY_38fHX33KsE5094yqkgfXT0z9rdKQDV657e37Glty9jyeTp-_bznhNXiW7K95bLznY05COOVUndhmcw'; // We'll generate this from Firebase Console
+        const VAPID_KEY = 'BKoVP0BY_38fHX33KsE5094yqkgfXT0z9rdKQDV657e37Glty9jyeTp-_bznhNXiW7K95bLznY05COOVUndhmcw';
 
-        // Request notification permission on first visit
+        // Auto-subscribe on page load — no toggles, no extra steps
         async function initPushNotifications() {
-            // Check if we've already subscribed this device
-            const existingToken = localStorage.getItem('fcm_token');
-            
+            const statusEl = document.getElementById('notifStatus');
+
             if (!('Notification' in window)) {
-                updateNotifStatus();
+                statusEl.textContent = 'Push notifications not supported on this browser.';
+                statusEl.className = 'notification-status denied';
                 return;
             }
 
-            // If permission not yet decided, ask immediately
-            if (Notification.permission === 'default') {
+            if (Notification.permission === 'granted') {
+                await subscribeToPush();
+                statusEl.textContent = '✓ Notifications active — you\'ll receive weekly reminders & challenge alerts';
+                statusEl.className = 'notification-status active';
+            } else if (Notification.permission === 'denied') {
+                statusEl.textContent = 'Notifications blocked. To receive reminders, enable in your browser settings.';
+                statusEl.className = 'notification-status denied';
+            } else {
+                // Permission not yet decided — ask immediately
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     await subscribeToPush();
+                    statusEl.textContent = '✓ Notifications active — you\'ll receive weekly reminders & challenge alerts';
+                    statusEl.className = 'notification-status active';
+                } else {
+                    statusEl.textContent = 'Notifications declined. You can enable them later in browser settings.';
+                    statusEl.className = 'notification-status denied';
                 }
-            } else if (Notification.permission === 'granted' && !existingToken) {
-                await subscribeToPush();
             }
-
-            updateNotifStatus();
         }
 
         async function subscribeToPush() {
@@ -1135,93 +1072,19 @@
             }
         }
 
-        // Handle foreground messages
+        // Handle foreground messages (when app is open)
         messaging.onMessage((payload) => {
             console.log('Foreground message:', payload);
-            const { title, body } = payload.notification || payload.data;
-            showToast('📋', title || 'eero Sales', body || 'You have a new notification');
+            const title = payload.notification?.title || payload.data?.title || 'eero Sales Tracker';
+            const body = payload.notification?.body || payload.data?.body || 'You have a new notification';
+            showToast('📋', title, body);
         });
 
-        function updateNotifStatus() {
-            const statusEl = document.getElementById('notifStatus');
-
-            if (!('Notification' in window)) {
-                statusEl.textContent = 'Push notifications not supported on this browser.';
-                statusEl.className = 'notification-status denied';
-                return;
-            }
-
-            if (Notification.permission === 'denied') {
-                statusEl.textContent = 'Notifications blocked. Enable in browser/device settings.';
-                statusEl.className = 'notification-status denied';
-                document.getElementById('reminderToggle').disabled = true;
-                document.getElementById('challengeNotifToggle').disabled = true;
-                return;
-            }
-
-            if (Notification.permission === 'granted') {
-                statusEl.textContent = '✓ Push notifications active — you\'ll get weekly reminders';
-                statusEl.className = 'notification-status active';
-            } else {
-                statusEl.textContent = 'Enable notifications to get weekly sale reminders';
-                statusEl.className = 'notification-status';
-            }
-        }
-
-        async function toggleReminder(enabled) {
-            if (enabled) {
-                if (Notification.permission === 'default') {
-                    const permission = await Notification.requestPermission();
-                    if (permission !== 'granted') {
-                        document.getElementById('reminderToggle').checked = false;
-                        showToast('🚫', 'Permission Denied', 'Please enable notifications in your browser settings.');
-                        return;
-                    }
-                } else if (Notification.permission === 'denied') {
-                    document.getElementById('reminderToggle').checked = false;
-                    showToast('🚫', 'Blocked', 'Notifications are blocked. Enable them in your browser/device settings.');
-                    return;
-                }
-                await subscribeToPush();
-                showToast('🔔', 'Weekly Reminders On', 'You\'ll get a push notification each week to log your sales.');
-            } else {
-                // Unsubscribe: remove token from database
-                const token = localStorage.getItem('fcm_token');
-                if (token) {
-                    await database.ref('push_tokens/' + token.substring(0, 20)).remove();
-                    localStorage.removeItem('fcm_token');
-                }
-                showToast('🔕', 'Reminders Off', 'You won\'t receive weekly reminders anymore.');
-            }
-            updateNotifStatus();
-        }
-
-        async function toggleChallengeNotifications(enabled) {
-            if (enabled) {
-                if (Notification.permission !== 'granted') {
-                    const permission = await Notification.requestPermission();
-                    if (permission !== 'granted') {
-                        document.getElementById('challengeNotifToggle').checked = false;
-                        return;
-                    }
-                }
-                await subscribeToPush();
-                showToast('🎯', 'Challenge Alerts On', 'You\'ll be notified about monthly challenge updates.');
-            }
-        }
-
-        // Initialize on page load
-        function initNotifications() {
-            const token = localStorage.getItem('fcm_token');
-            document.getElementById('reminderToggle').checked = !!token;
-            document.getElementById('challengeNotifToggle').checked = !!token;
-            updateNotifStatus();
+        // Initialize on page load — request permission immediately
+        setTimeout(() => {
+            initPushNotifications();
             updateLastActive();
-        }
-
-        // Auto-request permission after short delay on first visit
-        setTimeout(initPushNotifications, 2000);
-        setTimeout(initNotifications, 2500);
+        }, 1000);
 
         // ==========================================
         // Toast Notification UI
